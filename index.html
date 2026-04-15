@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCLTech AIForce PILOt for RTX EOS 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020c14;
+    --bg2: #061220;
+    --bg3: #0a1a2e;
+    --panel: #0d1f35;
+    --border: #1a3a5c;
+    --accent: #00c8ff;
+    --accent2: #00ff9d;
+    --warn: #ffaa00;
+    --danger: #ff4455;
+    --text: #c8dff0;
+    --muted: #5a7a9a;
+    --font: 'Rajdhani', sans-serif;
+    --mono: 'Share Tech Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    background-image:
+      linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo-mark {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: rgba(0,200,255,0.08);
+  }
+  .logo-text { font-size: 20px; font-weight: 700; letter-spacing: 0.12em; color: #fff; }
+  .logo-text span { color: var(--accent); }
+  .header-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    padding: 2px 8px;
+    letter-spacing: 0.1em;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 6px var(--accent2);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .status-text { font-family: var(--mono); font-size: 11px; color: var(--accent2); }
+  .theme-btn {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    font-family: var(--font);
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* LIGHT THEME */
+  body.light {
+    --bg: #f0f4f8;
+    --bg2: #e2eaf3;
+    --bg3: #d5e0ec;
+    --panel: #ffffff;
+    --border: #b0c8e0;
+    --text: #1a2e42;
+    --muted: #6a8aaa;
+    background-image:
+      linear-gradient(rgba(0,100,180,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,100,180,0.05) 1px, transparent 1px);
+  }
+
+  /* MAIN LAYOUT */
+  .main { display: flex; height: calc(100vh - 57px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 220px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+    flex-shrink: 0;
+  }
+  .sidebar-section { padding: 0 16px 12px; }
+  .sidebar-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .agent-nav-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: transparent;
+    border: none;
+    border-left: 2px solid transparent;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .agent-nav-btn:hover { background: rgba(0,200,255,0.06); color: var(--accent); }
+  .agent-nav-btn.active { border-left-color: var(--accent); color: var(--accent); background: rgba(0,200,255,0.08); }
+  .agent-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .sidebar-divider { height: 1px; background: var(--border); margin: 8px 16px; }
+
+  /* CONTENT AREA */
+  .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* AGENT HEADER BAR */
+  .agent-bar {
+    padding: 12px 24px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agent-title { font-size: 18px; font-weight: 700; letter-spacing: 0.08em; }
+  .agent-subtitle { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .agent-actions { display: flex; gap: 8px; }
+  .action-btn {
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .action-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,200,255,0.06); }
+  .action-btn.primary { border-color: var(--accent); color: var(--accent); }
+  .action-btn.danger { border-color: var(--danger); color: var(--danger); }
+  .action-btn.success { border-color: var(--accent2); color: var(--accent2); }
+
+  /* CHAT AREA */
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .chat-area::-webkit-scrollbar { width: 4px; }
+  .chat-area::-webkit-scrollbar-track { background: transparent; }
+  .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* WELCOME CARD */
+  .welcome-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 8px;
+  }
+  .welcome-title { font-size: 16px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 8px; }
+  .welcome-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .quick-btn {
+    padding: 6px 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .quick-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* MESSAGES */
+  .msg { display: flex; flex-direction: column; gap: 4px; max-width: 85%; }
+  .msg.user { align-self: flex-end; align-items: flex-end; }
+  .msg.agent { align-self: flex-start; align-items: flex-start; }
+  .msg-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+  .msg-bubble {
+    padding: 12px 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    border: 1px solid var(--border);
+  }
+  .msg.user .msg-bubble { background: rgba(0,200,255,0.08); border-color: rgba(0,200,255,0.3); }
+  .msg.agent .msg-bubble { background: var(--panel); }
+
+  /* DECISION BADGE */
+  .decision-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+    border: 1px solid;
+  }
+  .badge-approve { color: var(--accent2); border-color: var(--accent2); background: rgba(0,255,157,0.08); }
+  .badge-escalate { color: var(--warn); border-color: var(--warn); background: rgba(255,170,0,0.08); }
+  .badge-flag { color: var(--danger); border-color: var(--danger); background: rgba(255,68,85,0.08); }
+
+  /* SOURCES */
+  .sources {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .source-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    margin: 3px 3px 0 0;
+    font-size: 10px;
+  }
+
+  /* MSG ACTIONS */
+  .msg-actions { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .msg-action-btn {
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .msg-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* TYPING INDICATOR */
+  .typing {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+  .typing-text { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+  .typing-dots { display: flex; gap: 4px; }
+  .typing-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: dot 1.2s infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot { 0%,80%,100%{opacity:0.2;transform:scale(0.8)} 40%{opacity:1;transform:scale(1)} }
+
+  /* INPUT AREA */
+  .input-area {
+    padding: 16px 24px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .input-row { display: flex; gap: 8px; align-items: flex-end; }
+  .chat-input {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    padding: 10px 14px;
+    resize: none;
+    min-height: 44px;
+    max-height: 120px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .chat-input:focus { border-color: var(--accent); }
+  .chat-input::placeholder { color: var(--muted); }
+  .send-btn {
+    padding: 10px 20px;
+    background: var(--accent);
+    border: none;
+    color: #000;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .send-btn:hover { background: #33d4ff; }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .input-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .model-tag { color: var(--accent); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    background: var(--panel);
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    font-family: var(--mono);
+    font-size: 13px;
+    z-index: 9999;
+    animation: slideIn 0.3s ease;
+    max-width: 320px;
+  }
+  @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+  /* ERROR STATE */
+  .error-bubble {
+    padding: 12px 16px;
+    background: rgba(255,68,85,0.08);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    font-family: var(--mono);
+    font-size: 12px;
+    width: fit-content;
+  }
+
+  /* ── VOICE INPUT & OUTPUT ── */
+  .voice-btn {
+    background: linear-gradient(135deg, #003366, #0055aa) !important;
+    border: 2px solid #00c8ff !important;
+    color: #00c8ff !important;
+    width: 44px !important; height: 44px !important;
+    min-width: 44px !important;
+    border-radius: 50% !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    cursor: pointer !important; font-size: 20px !important;
+    transition: all 0.2s !important; flex-shrink: 0 !important;
+    box-shadow: 0 0 12px rgba(0,200,255,0.3) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .voice-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .voice-btn.listening {
+    border-color: var(--danger) !important;
+    color: var(--danger) !important;
+    background: rgba(255,68,85,0.1) !important;
+    animation: voicePulse 1s infinite;
+  }
+  @keyframes voicePulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(255,68,85,0.5); }
+    50% { box-shadow: 0 0 0 10px rgba(255,68,85,0); }
+  }
+  .voice-status {
+    font-size: 11px; color: var(--danger);
+    font-family: var(--mono); letter-spacing: 0.12em;
+    padding: 4px 8px; display: none;
+    animation: blink 1s infinite;
+  }
+  .voice-status.show { display: inline-block; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .speaking-wave {
+    display: none; align-items: center; gap: 3px;
+    padding: 4px 8px;
+  }
+  .speaking-wave.show { display: flex; }
+  .speaking-wave span {
+    display: inline-block; width: 3px; border-radius: 2px;
+    background: var(--accent); animation: sw 0.8s infinite;
+  }
+  .speaking-wave span:nth-child(1){height:6px;animation-delay:0s}
+  .speaking-wave span:nth-child(2){height:14px;animation-delay:0.1s}
+  .speaking-wave span:nth-child(3){height:10px;animation-delay:0.2s}
+  .speaking-wave span:nth-child(4){height:18px;animation-delay:0.3s}
+  .speaking-wave span:nth-child(5){height:8px;animation-delay:0.4s}
+  @keyframes sw { 0%,100%{transform:scaleY(0.5);opacity:0.5} 50%{transform:scaleY(1);opacity:1} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo-mark">⬡</div>
+    <div>
+      <div class="logo-text">HCLTech <span>AIForce</span></div>
+    </div>
+    <div class="header-tag">RTX-EOS-2026 // CONFIDENTIAL</div>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <div class="status-text">CONNECTED TO RTX KNOWLEDGE BASE</div>
+    <button class="theme-btn" onclick="toggleTheme()">◑ THEME</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">// AGENTS</div>
+      <button class="agent-nav-btn active" onclick="selectAgent('manufacturing-agent--rtx','Manufacturing Agent','Manufacturing & GTF Engine Ops','#00c8ff')" id="nav-manufacturing-agent--rtx">
+        <span class="agent-dot" style="background:#00c8ff"></span> Manufacturing
+      </button>
+      <button class="agent-nav-btn" onclick="selectAgent('supply-chain-agent','Supply Chain Agent','Supplier & Logistics Intelligence','#00ff9d')" id="nav-supply-chain-agent">
+        <span class="agent-dot" style="background:#00ff9d"></span> Supply Chain
+      </button>
+      <button class="agent-nav-btn" onclick="selectAgent('-finance-agent','Finance Agent','Financial Risk & Budget Analysis','#ffaa00')" id="nav--finance-agent">
+        <span class="agent-dot" style="background:#ffaa00"></span> Finance
+      </button>
+      <button class="agent-nav-btn" onclick="selectAgent('defense-programs-agent--rtx','Defense Programs Agent','Defense Contracts & Compliance','#ff4455')" id="nav-defense-programs-agent--rtx">
+        <span class="agent-dot" style="background:#ff4455"></span> Defense Programs
+      </button>
+      <button class="agent-nav-btn" onclick="selectAgent('hr--safety-agent--rtx','HR & Safety Agent','Workforce & Safety Compliance','#aa44ff')" id="nav-hr--safety-agent--rtx">
+        <span class="agent-dot" style="background:#aa44ff"></span> HR & Safety
+      </button>
+      <button class="agent-nav-btn" onclick="selectAgent('it-ops-agent','IT Ops Agent','Infrastructure & CMMC Compliance','#44aaff')" id="nav-it-ops-agent">
+        <span class="agent-dot" style="background:#44aaff"></span> IT Ops
+      </button>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">// KNOWLEDGE BASE</div>
+      <div style="font-size:12px;color:var(--muted);padding:4px 0;font-family:var(--mono)">RTX Collection<br><span style="color:var(--accent2)">● ACTIVE</span></div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">// QUICK ACTIONS</div>
+      <button class="agent-nav-btn" onclick="exportChat()">↓ Export Chat</button>
+      <button class="agent-nav-btn" onclick="clearChat()">⟳ Clear History</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="agent-bar">
+      <div>
+        <div class="agent-title" id="agent-title">Manufacturing Agent</div>
+        <div class="agent-subtitle" id="agent-subtitle">Manufacturing & GTF Engine Ops • RTX Knowledge Base • llama-3.1-8b-instant</div>
+      </div>
+      <div class="agent-actions">
+        <button class="action-btn" onclick="triggerAction('Send to Engineering Team')">→ Engineering</button>
+        <button class="action-btn danger" onclick="triggerAction('Escalate to RTX Leadership')">⚠ Escalate</button>
+        <button class="action-btn success" onclick="triggerAction('Create ServiceNow Ticket')">+ ServiceNow</button>
+      </div>
+    </div>
+
+    <div class="chat-area" id="chat-area">
+      <div class="welcome-card">
+        <div class="welcome-title">⬡ MANUFACTURING AGENT — ONLINE</div>
+        <div class="welcome-text">Connected to RTX Knowledge Base. I have access to the full RTX EOS proposal, RFP documents, GTF engine data, compliance matrices, and use case backlog. Ask me anything — I will analyze from your documents and give a clear APPROVE / ESCALATE / FLAG decision.</div>
+        <div class="quick-actions" id="quick-actions">
+          <button class="quick-btn" onclick="sendQuick(this)">What is the GTF engine inspection backlog?</button>
+          <button class="quick-btn" onclick="sendQuick(this)">What maintenance actions are overdue?</button>
+          <button class="quick-btn" onclick="sendQuick(this)">Summarize manufacturing risks for RTX</button>
+          <button class="quick-btn" onclick="sendQuick(this)">What is the Percept system?</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-row">
+        <button id="voice-btn" onclick="toggleVoice()" style="min-width:46px;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#003366,#0055aa);border:2px solid #00c8ff;color:#00c8ff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 15px rgba(0,200,255,0.5);">🎙</button>
+        <textarea class="chat-input" id="chat-input" placeholder="Ask the agent... (Shift+Enter for new line, or click 🎙 to speak)" rows="1"
+          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">SEND ▶</button>
+      </div>
+      <div class="input-meta">
+        <span>Model: <span class="model-tag" id="model-tag">manufacturing-agent--rtx</span> via Open WebUI</span>
+        <span class="voice-status" id="voice-status">🎙 LISTENING...</span>
+        <div class="speaking-wave" id="speaking-wave"><span></span><span></span><span></span><span></span><span></span></div>
+        <span id="char-count">RTX Knowledge Base active</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const OPENWEBUI_URL = 'http://localhost:3000';
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ3NDYwMzhlLTlmMzgtNGM4NS04MmE4LTg4NDYzOWM3ODMyYyIsImV4cCI6MTc3ODU2NDY3MywianRpIjoiZjY1ZDAyYTQtZTgwMi00MGM3LWJkOTctM2E2ZThmMDNhZTMzIn0.4U_4wEhJcC0KGU0WKHEN-k9acEhtRad0J-rry3WwiYA';
+
+let currentModel = 'manufacturing-agent--rtx';
+let currentAgentName = 'Manufacturing Agent';
+let isLoading = false;
+let chatHistory = {};
+
+const quickPrompts = {
+  'manufacturing-agent--rtx': [
+    'What is the GTF engine inspection backlog?',
+    'What maintenance actions are overdue?',
+    'Summarize manufacturing risks for RTX',
+    'What is the Percept system?'
+  ],
+  'supply-chain-agent': [
+    'Which suppliers are at critical risk?',
+    'What is the dual-source strategy for GTF parts?',
+    'Identify single-source dependencies in RTX supply chain',
+    'What supplier diversification actions are recommended?'
+  ],
+  '-finance-agent': [
+    'What was RTX total revenue in 2025?',
+    'How much is the GTF crisis costing RTX?',
+    'What is RTX current backlog value?',
+    'Summarize financial risks for the EOS contract'
+  ],
+  'defense-programs-agent--rtx': [
+    'What are the CMMC Phase 2 requirements?',
+    'Summarize RTX defense contract status',
+    'What are the key RFP compliance gaps?',
+    'What is the AION platform advantage?'
+  ],
+  'hr--safety-agent--rtx': [
+    'What are the key workforce safety risks at RTX?',
+    'How many OSHA incidents were reported?',
+    'What training programs are recommended?',
+    'Summarize HR compliance requirements'
+  ],
+  'it-ops-agent': [
+    'What is the SAP S/4HANA migration status?',
+    'What CMMC controls are missing?',
+    'Summarize IT infrastructure risks',
+    'What cloud governance issues exist?'
+  ]
+};
+
+function selectAgent(modelId, name, subtitle, color) {
+  currentModel = modelId;
+  currentAgentName = name;
+
+  document.querySelectorAll('.agent-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav-' + modelId).classList.add('active');
+
+  document.getElementById('agent-title').textContent = name;
+  document.getElementById('agent-subtitle').textContent = subtitle + ' • RTX Knowledge Base';
+  document.getElementById('model-tag').textContent = modelId;
+
+  const area = document.getElementById('chat-area');
+  area.innerHTML = '';
+
+  const welcome = document.createElement('div');
+  welcome.className = 'welcome-card';
+  welcome.innerHTML = `
+    <div class="welcome-title" style="color:${color}">⬡ ${name.toUpperCase()} — ONLINE</div>
+    <div class="welcome-text">Connected to RTX Knowledge Base. Ask me anything about ${subtitle.toLowerCase()} — I will give a clear APPROVE / ESCALATE / FLAG decision based on your documents.</div>
+    <div class="quick-actions" id="quick-actions">
+      ${(quickPrompts[modelId] || []).map(q => `<button class="quick-btn" onclick="sendQuick(this)">${q}</button>`).join('')}
+    </div>
+  `;
+  area.appendChild(welcome);
+}
+
+function sendQuick(btn) {
+  document.getElementById('chat-input').value = btn.textContent;
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+
+  appendUserMessage(msg);
+
+  const typing = appendTyping();
+
+  if (!chatHistory[currentModel]) chatHistory[currentModel] = [];
+  chatHistory[currentModel].push({ role: 'user', content: msg });
+
+  try {
+    const response = await fetch(`${OPENWEBUI_URL}/api/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TOKEN}`
+      },
+      body: JSON.stringify({
+        model: currentModel,
+        messages: chatHistory[currentModel],
+        stream: false
+      })
+    });
+
+    typing.remove();
+
+    if (!response.ok) {
+      const err = await response.text();
+      appendError(`API Error ${response.status}: ${err.substring(0, 200)}`);
+    } else {
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content || 'No response received.';
+      chatHistory[currentModel].push({ role: 'assistant', content });
+      appendAgentMessage(content);
+    }
+  } catch (err) {
+    typing.remove();
+    appendError(`Connection error: ${err.message}. Make sure Open WebUI is running at ${OPENWEBUI_URL}`);
+  }
+
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+function appendUserMessage(text) {
+  const area = document.getElementById('chat-area');
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `
+    <div class="msg-label">YOU</div>
+    <div class="msg-bubble">${escapeHtml(text)}</div>
+  `;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function appendAgentMessage(text) {
+  const area = document.getElementById('chat-area');
+  const div = document.createElement('div');
+  div.className = 'msg agent';
+
+  const decision = detectDecision(text);
+  const badgeHtml = decision ? `<div class="decision-badge badge-${decision.toLowerCase()}">${decision === 'APPROVE' ? '✓' : decision === 'ESCALATE' ? '⚠' : '⚑'} ${decision}</div>` : '';
+
+  div.innerHTML = `
+    <div class="msg-label">${currentAgentName.toUpperCase()} • RTX KNOWLEDGE BASE</div>
+    <div class="msg-bubble">
+      ${badgeHtml}
+      <div>${formatText(text)}</div>
+      <div class="sources">
+        <div>SOURCE: RTX Knowledge Base</div>
+        <span class="source-tag">RTX EOS Proposal</span>
+        <span class="source-tag">RFP Documents</span>
+        <span class="source-tag">AION Roadmap</span>
+      </div>
+    </div>
+    <div class="msg-actions">
+      <button class="msg-action-btn" onclick="triggerAction('Send to Engineering Team')">→ Send to Engineering</button>
+      <button class="msg-action-btn" onclick="triggerAction('Escalate to RTX Leadership')">⚠ Escalate</button>
+      <button class="msg-action-btn" onclick="copyText(this, \`${text.replace(/`/g, '\\`')}\`)">⎘ Copy</button>
+      <button class="msg-action-btn" onclick="triggerAction('Create ServiceNow Ticket')">+ ServiceNow</button>
+    </div>
+  `;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  speakResponse(text);
+}
+
+function appendTyping() {
+  const area = document.getElementById('chat-area');
+  const div = document.createElement('div');
+  div.className = 'msg agent';
+  div.innerHTML = `
+    <div class="msg-label">${currentAgentName.toUpperCase()} — PROCESSING</div>
+    <div class="typing">
+      <div class="typing-text">ANALYZING RTX KNOWLEDGE BASE</div>
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>
+  `;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+function appendError(msg) {
+  const area = document.getElementById('chat-area');
+  const div = document.createElement('div');
+  div.className = 'msg agent';
+  div.innerHTML = `<div class="error-bubble">⚠ ${escapeHtml(msg)}</div>`;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function detectDecision(text) {
+  const upper = text.toUpperCase();
+  if (upper.includes('APPROVE') || upper.includes('APPROVED')) return 'APPROVE';
+  if (upper.includes('ESCALATE') || upper.includes('ESCALATION')) return 'ESCALATE';
+  if (upper.includes('FLAG') || upper.includes('FLAGGED') || upper.includes('CRITICAL RISK')) return 'FLAG';
+  return null;
+}
+
+function formatText(text) {
+  return escapeHtml(text)
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, '<code style="background:rgba(0,200,255,0.1);padding:1px 5px;font-family:var(--mono);font-size:12px">$1</code>')
+    .replace(/\n/g, '<br>');
+}
+
+function escapeHtml(text) {
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+function triggerAction(action) {
+  showToast(`ACTION TRIGGERED: ${action}`);
+}
+
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
+}
+
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = '✓ ' + msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('light');
+}
+
+function clearChat() {
+  chatHistory[currentModel] = [];
+  selectAgent(currentModel, currentAgentName,
+    document.getElementById('agent-subtitle').textContent, '#00c8ff');
+}
+
+function exportChat() {
+  const msgs = document.querySelectorAll('.msg-bubble');
+  let text = `HCLTech AIForce — ${currentAgentName} — Export\n${'='.repeat(50)}\n\n`;
+  msgs.forEach(m => { text += m.innerText + '\n\n---\n\n'; });
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
+  a.download = `${currentModel}-export.txt`;
+  a.click();
+  showToast('Chat exported successfully');
+}
+
+// ── VOICE INPUT & OUTPUT ──
+let recognition = null;
+let isListening = false;
+const synth = window.speechSynthesis;
+
+function setupRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return null;
+  const r = new SR();
+  r.continuous = false;
+  r.interimResults = true;
+  r.lang = 'en-US';
+
+  r.onstart = () => {
+    isListening = true;
+    document.getElementById('voice-btn').classList.add('listening');
+    document.getElementById('voice-btn').textContent = '⏹';
+    document.getElementById('voice-status').classList.add('show');
+    document.getElementById('chat-input').placeholder = '🎙 Listening... speak now';
+  };
+
+  r.onresult = (e) => {
+    let final = '', interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    document.getElementById('chat-input').value = final || interim;
+    if (final) { stopListening(); setTimeout(sendMessage, 400); }
+  };
+
+  r.onerror = (e) => {
+    stopListening();
+    if (e.error === 'not-allowed') showToast('Microphone blocked — allow mic in browser settings');
+    else if (e.error === 'no-speech') showToast('No speech detected — try again');
+  };
+
+  r.onend = () => stopListening();
+  return r;
+}
+
+function stopListening() {
+  isListening = false;
+  if (recognition) { try { recognition.stop(); } catch(e){} }
+  const btn = document.getElementById('voice-btn');
+  btn.classList.remove('listening');
+  btn.textContent = '🎙';
+  document.getElementById('voice-status').classList.remove('show');
+  document.getElementById('chat-input').placeholder = 'Ask the agent... (Shift+Enter for new line, or click 🎙 to speak)';
+}
+
+function toggleVoice() {
+  if (!recognition) recognition = setupRecognition();
+  if (!recognition) { showToast('Voice not supported — use Chrome or Edge browser'); return; }
+  synth.cancel();
+  if (isListening) { stopListening(); return; }
+  try { recognition.start(); } catch(e) { recognition = setupRecognition(); recognition.start(); }
+}
+
+function speakResponse(text) {
+  if (!synth) return;
+  synth.cancel();
+
+  // Clean text for speech
+  const clean = text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/#{1,6}\s/g, '')
+    .replace(/[⬡✓⚠⚑→↓⟳◑]/g, '')
+    .replace(/APPROVE|ESCALATE|FLAG/g, m => m.toLowerCase())
+    .replace(/\n+/g, '. ')
+    .replace(/<[^>]*>/g, '')
+    .trim()
+    .substring(0, 600);
+
+  if (!clean) return;
+
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.rate = 1.0;
+  utt.pitch = 1.0;
+  utt.volume = 1.0;
+  utt.lang = 'en-US';
+
+  // Pick best voice
+  const voices = synth.getVoices();
+  const best = voices.find(v => v.name.includes('Google') && v.lang === 'en-US')
+    || voices.find(v => v.lang === 'en-US' && !v.localService)
+    || voices.find(v => v.lang.startsWith('en'))
+    || voices[0];
+  if (best) utt.voice = best;
+
+  const wave = document.getElementById('speaking-wave');
+  utt.onstart = () => wave && wave.classList.add('show');
+  utt.onend = () => wave && wave.classList.remove('show');
+  utt.onerror = () => wave && wave.classList.remove('show');
+
+  // Chrome bug fix
+  setTimeout(() => synth.speak(utt), 100);
+}
+
+// Load voices
+if (synth) {
+  synth.getVoices();
+  if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = () => synth.getVoices();
+}
+
+</script>
+</body>
+</html>
